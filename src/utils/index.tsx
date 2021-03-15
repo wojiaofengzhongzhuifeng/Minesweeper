@@ -1,5 +1,5 @@
-type LimitNumber = 0 | 1 // 0 代表安全区, 1 代表雷区
-type MineClearance = LimitNumber[][]
+export type LimitNumber = 0 | 1 // 0 代表安全区, 1 代表雷区
+export type MineClearance = LimitNumber[][]
 
 // 用户选择区域后的结果
 type SelectResult = {
