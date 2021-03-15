@@ -1,6 +1,24 @@
-import sum from '../utils/index';
+import { initMineClearanceData } from '../utils';
 
-// @ts-ignore
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
+test('生成扫雷所需数据', () => {
+  let row = 3;
+  let col = 4;
+  let result = initMineClearanceData(row, col);
+  let afterFlatResult = result.flat();
+  console.log(afterFlatResult.length);
+  let onlyIncludeOneOrZero = true;
+
+  for(let i=0;i<=afterFlatResult.length - 1;i++){
+    let number = afterFlatResult[i];
+    if(!([0, 1].includes(number))){
+      onlyIncludeOneOrZero = false
+    }
+  }
+
+
+
+  expect(result.length).toBe(row);
+  expect(result[0].length).toBe(col);
+  expect(onlyIncludeOneOrZero).toBe(true);
+
 });
