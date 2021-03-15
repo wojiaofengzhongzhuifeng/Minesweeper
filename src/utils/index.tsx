@@ -37,10 +37,37 @@ export function initMineClearanceData(row: number, col: number): MineClearance{
   return result
 }
 
+// 计算得出周围 8 个区块雷区个数
+function computedDangerousArea(mineClearance: MineClearance, row: number, col: number): number{
+  let aroundArea1 = (mineClearance[row - 1] && mineClearance[row - 1][col - 1]) === undefined ? 0 : mineClearance[row - 1][col - 1];
+  let aroundArea2 = (mineClearance[row - 1] && mineClearance[row - 1][col]) === undefined ? 0 : mineClearance[row - 1][col];
+  let aroundArea3 = (mineClearance[row - 1] && mineClearance[row - 1][col + 1]) === undefined ? 0 : mineClearance[row - 1][col + 1];
+  let aroundArea4 = (mineClearance[row] && mineClearance[row][col - 1]) === undefined ? 0 : mineClearance[row][col - 1];
+  let aroundArea5 = (mineClearance[row] && mineClearance[row][col + 1]) === undefined ? 0 : mineClearance[row][col + 1];
+  let aroundArea6 = (mineClearance[row + 1] && mineClearance[row + 1][col - 1]) === undefined ? 0 : mineClearance[row + 1][col - 1];
+  let aroundArea7 = (mineClearance[row + 1] && mineClearance[row + 1][col]) === undefined ? 0 : mineClearance[row + 1][col];
+  let aroundArea8 = (mineClearance[row + 1] && mineClearance[row + 1][col + 1]) === undefined ? 0 : mineClearance[row + 1][col + 1];
+
+  return aroundArea1 + aroundArea2 + aroundArea3 + aroundArea4 + aroundArea5 + aroundArea6 + aroundArea7 + aroundArea8
+}
+
 // 根据用户所选, 返回结果
 export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowCol: SelectRowCol): SelectResult{
-  return {
-    clickDangerous: true
+  let {row, col} = selectRowCol;
+  const selectArea = mineClearance[row][col];
+
+  if(selectArea === 1){
+    return {
+      clickDangerous: true
+    }
+  } else {
+   // 计算周围 8 个区块 1 的数量.
+    let aroundDangerousArea = computedDangerousArea(mineClearance, row, col)
+
+    return {
+      clickDangerous: false,
+      aroundDangerous: aroundDangerousArea
+    }
   }
 }
 
