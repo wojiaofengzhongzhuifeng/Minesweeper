@@ -2,7 +2,7 @@ export type LimitNumber = 0 | 1 // 0 代表安全区, 1 代表雷区
 export type MineClearance = LimitNumber[][]
 
 // 用户选择区域后的结果
-type SelectResult = {
+export type SelectResult = {
   clickDangerous: boolean, // true 表示点击雷区; false 表示点击安全区
   aroundDangerous?: number // 周围八个区的雷区数量总和
 }
