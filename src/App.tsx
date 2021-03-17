@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import './App.css';
 import {
   getUserSelectAreaResult,
@@ -77,7 +77,7 @@ function App() {
   }, []);
 
   // 判断用户的结果
-  const checkGameResult = ()=>{
+  const checkGameResult = useCallback(()=>{
     let resultArray = rowAndColMinClearance?.flat();
     // eslint-disable-next-line array-callback-return
     let clickMineAreaFlag = resultArray && resultArray.find((areaData)=>{
@@ -86,7 +86,7 @@ function App() {
       }
     }) !== undefined
 
-    //
+    // eslint-disable-next-line array-callback-return
     let passGameFlag = resultArray && resultArray.find((areaData)=>{
       if((areaData.number === 0 && areaData.clicked !== true) || (areaData.number === 1 && areaData.tag !== true)){
         return true
@@ -101,14 +101,12 @@ function App() {
       console.log('通过游戏');
     }
 
-
-
-  }
+  }, [rowAndColMinClearance])
 
   useEffect(()=>{
     console.log('新 data', rowAndColMinClearance);
     checkGameResult();
-  }, [rowAndColMinClearance]);
+  }, [checkGameResult, rowAndColMinClearance]);
 
   const handleClick = (rowIndex: number, colIndex: number, e: any)=>{
 
@@ -119,7 +117,7 @@ function App() {
   }
 
   const handleRightClick = (rowIndex: number, colIndex: number, e: any)=>{
-    console.log('handleRightClick');
+    console.log('handleRightClick', e);
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'rightClick');
     setRowAndColMinClearance(afterSelectResult);
   }

@@ -12,12 +12,6 @@ export type MineAreaData = {
 } // 雷区的数据
 export type MineClearance = (SafeAreaData | MineAreaData)[][]
 
-// 用户选择区域后的结果
-export type SelectResult = {
-  clickDangerous: boolean, // true 表示点击雷区; false 表示点击安全区
-  aroundDangerous?: number // 周围八个区的雷区数量总和
-}
-
 export type ClickType = 'leftClick' | 'rightClick' // rightClick 表示标记区块
 
 // 用户选择的行列
@@ -26,7 +20,7 @@ export type ClickType = 'leftClick' | 'rightClick' // rightClick 表示标记区
   col: number,
 }
 
-// 变量
+// 变量 生成雷区的概率
 const ONE_PROBABILITY = 30;
 
 // 返回数字 1 的概率
@@ -53,7 +47,7 @@ export function initMineClearanceData(row: number, col: number): MineClearance{
           number: 0,
           clicked: false,
           tag: false,
-          aroundDangerous: null // -1 表示初始状态
+          aroundDangerous: null
         }
       }
       colArray.push(areaData);
@@ -61,7 +55,6 @@ export function initMineClearanceData(row: number, col: number): MineClearance{
     result.push(colArray);
   }
   console.log(result)
-  // todo
   return result
 }
 
