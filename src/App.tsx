@@ -3,10 +3,10 @@ import './App.css';
 import {
   getUserSelectAreaResult,
   initMineClearanceData,
-  LimitNumber,
+  MineAreaData,
   MineClearance,
-  SelectResult,
-  SelectRowCol
+  SafeAreaData,
+
 } from './utils';
 
 
@@ -17,16 +17,13 @@ function AreaRow(
     rowData,
     rowIndex,
     handleClick,
-    selectResult,
-    selectRowCol
-  }: {rowData: LimitNumber[], rowIndex: number, handleClick: (rowIndex: number, colIndex: number, e: any)=>void, selectResult: SelectResult |undefined, selectRowCol: SelectRowCol | undefined}
+  }: {rowData: (SafeAreaData | MineAreaData)[], rowIndex: number, handleClick: (rowIndex: number, colIndex: number, e: any)=>void}
   ){
-  console.log(selectResult);
-  console.log(selectRowCol);
 
-  const renderAreaContent = ()=>{
+
+  const renderAreaContent = ({number}: {number: number})=>{
     return (
-    <div></div>
+    <div>{number}</div>
     )
   }
 
@@ -39,7 +36,7 @@ function AreaRow(
             key={`${rowIndex}-${colIndex}`}
             onClick={(e)=>{handleClick(rowIndex, colIndex, e)}}
           >
-            {renderAreaContent()}
+            {renderAreaContent({number: col.number})}
           </div>
         ))
       }
@@ -49,22 +46,23 @@ function AreaRow(
 
 function App() {
   const [rowAndColMinClearance, setRowAndColMinClearance] = useState<MineClearance>();
-  const [selectResult, setSelectResult] = useState<SelectResult>();
-  const [selectRowCol, setSelectRowCol] = useState<SelectRowCol>();
+  // const [selectResult, setSelectResult] = useState<SelectResult>();
+  // const [selectRowCol, setSelectRowCol] = useState<SelectRowCol>();
   useEffect(()=>{
     setRowAndColMinClearance(initMineClearanceData(5, 6));
   }, []);
 
   const handleClick = (rowIndex: number, colIndex: number, e: any)=>{
-    let selectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex});
+    let selectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'left');
+    console.log(e);
     console.log(selectResult);
     console.log(rowIndex);
     console.log(colIndex);
-    setSelectResult(selectResult);
-    setSelectRowCol({
-      row: rowIndex,
-      col: colIndex,
-    })
+    // setSelectResult(selectResult);
+    // setSelectRowCol({
+    //   row: rowIndex,
+    //   col: colIndex,
+    // })
   }
 
   return (
@@ -78,8 +76,8 @@ function App() {
               rowIndex={index}
               key={index}
               handleClick={handleClick}
-              selectResult={selectResult}
-              selectRowCol={selectRowCol}
+              // selectResult={selectResult}
+              // selectRowCol={selectRowCol}
             />
           ))
         }
