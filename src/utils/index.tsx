@@ -18,7 +18,7 @@ export type SelectResult = {
   aroundDangerous?: number // 周围八个区的雷区数量总和
 }
 
-export type ClickType = 'left' | 'right'
+export type ClickType = 'leftClick' | 'rightClick' // rightClick 表示标记区块
 
 // 用户选择的行列
  export interface SelectRowCol {
@@ -85,7 +85,7 @@ export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowC
   const selectArea = mineClearance[row][col].number;
   const copyMineClearance = JSON.parse(JSON.stringify(mineClearance));
 
-  if(clickType === 'left'){
+  if(clickType === 'leftClick'){
     if(copyMineClearance[row][col].tag){
       console.log('已经右键标记,请解除标记');
       return copyMineClearance

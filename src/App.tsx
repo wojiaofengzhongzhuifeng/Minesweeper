@@ -17,7 +17,8 @@ function AreaRow(
     rowData,
     rowIndex,
     handleClick,
-  }: {rowData: (SafeAreaData | MineAreaData)[], rowIndex: number, handleClick: (rowIndex: number, colIndex: number, e: any)=>void}
+    handleRightClick,
+  }: {rowData: (SafeAreaData | MineAreaData)[], rowIndex: number, handleClick: (rowIndex: number, colIndex: number, e: any)=>void, handleRightClick: (rowIndex: number, colIndex: number, e: any)=>void}
   ){
 
   const renderAroundDangerousNumber = (areaData: SafeAreaData | MineAreaData)=>{
@@ -38,10 +39,10 @@ function AreaRow(
         {areaData.number === 1 ? `地雷${areaData.number}` : `安全${areaData.number}`}
       </p>
       <p>
-        {areaData.tag ? `被标记${areaData.tag}` : `未被标记${areaData.tag}`}
+        {areaData.tag ? `标记${areaData.tag}` : `标记${areaData.tag}`}
       </p>
       <p>
-        {areaData.clicked ? `被点击${areaData.clicked}` : `未被点击${areaData.clicked}`}
+        {areaData.clicked ? `点击${areaData.clicked}` : `点击${areaData.clicked}`}
       </p>
       {
         renderAroundDangerousNumber(areaData)
@@ -58,6 +59,7 @@ function AreaRow(
             style={{width: '200', height: '200px', border: '1px solid red', cursor: 'pointer'}}
             key={`${rowIndex}-${colIndex}`}
             onClick={(e)=>{handleClick(rowIndex, colIndex, e)}}
+            onContextMenu={(e)=>{handleRightClick(rowIndex, colIndex, e)}}
           >
             {renderAreaContent(col)}
           </div>
@@ -109,7 +111,16 @@ function App() {
   }, [rowAndColMinClearance]);
 
   const handleClick = (rowIndex: number, colIndex: number, e: any)=>{
-    let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'left');
+
+    console.log('e', e);
+
+    let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'leftClick');
+    setRowAndColMinClearance(afterSelectResult);
+  }
+
+  const handleRightClick = (rowIndex: number, colIndex: number, e: any)=>{
+    console.log('handleRightClick');
+    let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'rightClick');
     setRowAndColMinClearance(afterSelectResult);
   }
 
@@ -124,6 +135,7 @@ function App() {
               rowIndex={index}
               key={index}
               handleClick={handleClick}
+              handleRightClick={handleRightClick}
               // selectResult={selectResult}
               // selectRowCol={selectRowCol}
             />

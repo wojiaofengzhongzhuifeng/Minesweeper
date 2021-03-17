@@ -4,6 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// 禁用右键默认行为
+document.oncontextmenu = function (evt) {
+  evt.preventDefault();
+};
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
