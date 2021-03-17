@@ -10,15 +10,19 @@ import {
 } from './utils';
 
 
-// 一行
-// todo
+
+// ui 一行的区块
 function AreaRow(
   {
     rowData,
     rowIndex,
     handleClick,
     handleRightClick,
-  }: {rowData: (SafeAreaData | MineAreaData)[], rowIndex: number, handleClick: (rowIndex: number, colIndex: number, e: any)=>void, handleRightClick: (rowIndex: number, colIndex: number, e: any)=>void}
+  }: {
+      rowData: (SafeAreaData | MineAreaData)[],
+      rowIndex: number,
+      handleClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>void,
+      handleRightClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>void}
   ){
 
   const renderAroundDangerousNumber = (areaData: SafeAreaData | MineAreaData)=>{
@@ -108,7 +112,7 @@ function App() {
     checkGameResult();
   }, [checkGameResult, rowAndColMinClearance]);
 
-  const handleClick = (rowIndex: number, colIndex: number, e: any)=>{
+  const handleClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
 
     console.log('e', e);
 
@@ -116,7 +120,7 @@ function App() {
     setRowAndColMinClearance(afterSelectResult);
   }
 
-  const handleRightClick = (rowIndex: number, colIndex: number, e: any)=>{
+  const handleRightClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
     console.log('handleRightClick', e);
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'rightClick');
     setRowAndColMinClearance(afterSelectResult);
@@ -134,8 +138,6 @@ function App() {
               key={index}
               handleClick={handleClick}
               handleRightClick={handleRightClick}
-              // selectResult={selectResult}
-              // selectRowCol={selectRowCol}
             />
           ))
         }
