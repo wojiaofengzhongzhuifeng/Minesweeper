@@ -2,7 +2,7 @@ export type LimitNumber = 0 | 1 // 0 代表安全区, 1 代表雷区
 export type SafeAreaData = {
   number: 0
   clicked: boolean
-  tag: boolean // 是否被右键标记
+  tag: boolean // 是否被标记
   aroundDangerous: number | null
 }
 export type MineAreaData = {
@@ -93,7 +93,7 @@ export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowC
     copyMineClearance[row][col] = {...mineClearance[row][col], clicked: true}
     if(selectArea === 0){
       let aroundDangerousArea = computedDangerousArea(mineClearance, row, col);
-      copyMineClearance[row][col] = {...mineClearance[row][col], aroundDangerous: aroundDangerousArea}
+      copyMineClearance[row][col] = {...mineClearance[row][col], aroundDangerous: aroundDangerousArea,  clicked: true}
     }
   } else {
     copyMineClearance[row][col] = {...mineClearance[row][col], tag: !mineClearance[row][col].tag}
