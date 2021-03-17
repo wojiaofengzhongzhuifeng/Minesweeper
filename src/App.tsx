@@ -9,6 +9,25 @@ import {
 
 } from './utils';
 
+import styled from 'styled-components'
+
+const Box = styled.div`
+  width: 40px;
+  height: 40px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  margin:5px
+`
+const SafeBox = styled(Box)`
+  border: 5px solid green;
+`
+const DangerousBox = styled(Box)`
+  border: 5px solid red;
+`
+
+const TagBOx = styled(Box)`
+  border: 5px solid yellow;
+`
+
 
 
 // ui 一行的区块
@@ -28,7 +47,7 @@ function AreaRow(
   const renderAroundDangerousNumber = (areaData: SafeAreaData | MineAreaData)=>{
     if(areaData.number === 0 && areaData.clicked){
       return (
-        <span>附近雷区: {areaData.aroundDangerous}</span>
+        <span>{areaData.aroundDangerous}</span>
       )
     } else {
       return null
@@ -37,6 +56,28 @@ function AreaRow(
 
 
   const renderAreaContent = (areaData: SafeAreaData | MineAreaData)=>{
+    if(areaData.tag){
+      return (
+        <TagBOx />
+      )
+    }
+    if(!areaData.clicked){ // 未点击状态
+      return (
+        <Box></Box>
+      )
+    } else if(areaData.clicked){ // 点击状态
+      if(areaData.number === 0){ // 点击安全区
+        return (
+          <SafeBox>
+            {renderAroundDangerousNumber(areaData)}
+          </SafeBox>
+        )
+      } else { // 点击危险区
+        return (
+          <DangerousBox />
+        )
+      }
+    }
     return (
     <div>
       <p>
@@ -56,11 +97,11 @@ function AreaRow(
   }
 
   return (
-    <div style={{border: '10px solid red', display: 'flex'}}>
+    <div style={{display: 'flex', justifyContent:'center'}}>
       {
         rowData.map((col, colIndex)=>(
           <div
-            style={{width: '200', height: '200px', border: '1px solid red', cursor: 'pointer'}}
+            style={{cursor: 'pointer'}}
             key={`${rowIndex}-${colIndex}`}
             onClick={(e)=>{handleClick(rowIndex, colIndex, e)}}
             onContextMenu={(e)=>{handleRightClick(rowIndex, colIndex, e)}}
@@ -73,7 +114,7 @@ function AreaRow(
   )
 }
 
-function App() {
+function MineArea() {
   const [rowAndColMinClearance, setRowAndColMinClearance] = useState<MineClearance>();
 
   useEffect(()=>{
@@ -144,6 +185,14 @@ function App() {
       </div>
     </div>
   );
+}
+
+function App(){
+  return (
+    <div>
+      <MineArea />
+    </div>
+  )
 }
 
 export default App;
