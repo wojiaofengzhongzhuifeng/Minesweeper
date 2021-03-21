@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App, {AppProviders} from './App';
 import reportWebVitals from './reportWebVitals';
 
 // 禁用右键默认行为
@@ -11,7 +11,9 @@ document.oncontextmenu = function (evt) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AppProviders>
+      <App />
+    </AppProviders>
   </React.StrictMode>,
   document.getElementById('root')
 );

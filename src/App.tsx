@@ -27,7 +27,33 @@ const DangerousBox = styled(Box)`
 const TagBOx = styled(Box)`
   border: 5px solid yellow;
 `
+// 1️⃣ 创建全局 context
+const CountContext = React.createContext<any>(null);
+CountContext.displayName = "countContext";
 
+const useMineData = ()=>{
+  const [count, setCount] = useState(0);
+  return {
+    count,
+    setCount
+  };
+}
+
+const CountProvider = ({ children }: any) => {
+  const { count, setCount } = useMineData();
+  return (
+    <CountContext.Provider value={{ count, setCount }} children={children} />
+  );
+};
+
+const useCountContext = () => {
+  const context = React.useContext(CountContext);
+  console.log(context);
+  if (!context) {
+    throw new Error("useAuth 必须在 AuthProvider 中使用");
+  }
+  return context;
+};
 
 
 // ui 一行的区块
@@ -192,9 +218,12 @@ function MineArea() {
   );
 }
 function MineHeader(){
+  const { setCount, count } = useCountContext();
+
   return (
     <div className={'mine-header'}>
       <SelectDifficulty />
+      <button onClick={()=>{setCount(count + 1)}}> + 1</button>
       <Statistics />
     </div>
   )
@@ -208,9 +237,11 @@ function SelectDifficulty(){
   )
 }
 function Statistics(){
+  const { setCount, count } = useCountContext();
+
   return (
     <div>
-      Statistics
+      ⛳: {count}
     </div>
   )
 }
@@ -227,5 +258,9 @@ function App(){
     </div>
   )
 }
+
+export const AppProviders = ({ children }: any) => {
+  return <CountProvider>{children}</CountProvider>;
+};
 
 export default App;
