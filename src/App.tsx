@@ -15,18 +15,19 @@ const Box = styled.div`
   width: 40px;
   height: 40px;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-  margin:5px
+  margin:5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const SafeBox = styled(Box)`
-  border: 5px solid green;
 `
 const DangerousBox = styled(Box)`
-  border: 5px solid red;
 `
 
 const TagBOx = styled(Box)`
-  border: 5px solid yellow;
 `
+const numberEmojiMap = ['✅', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣']
 // 1️⃣ 创建全局 context
 const CountContext = React.createContext<{
   rowAndColMinClearance: MineClearance,
@@ -124,8 +125,9 @@ function AreaRow(
 
   const renderAroundDangerousNumber = (areaData: SafeAreaData | MineAreaData)=>{
     if(areaData.number === 0 && areaData.clicked){
+      let aroundDangerous = areaData.aroundDangerous as number;
       return (
-        <span>{areaData.aroundDangerous}</span>
+        <p>{numberEmojiMap[aroundDangerous]}</p>
       )
     } else {
       return null
@@ -136,7 +138,7 @@ function AreaRow(
   const renderAreaContent = (areaData: SafeAreaData | MineAreaData)=>{
     if(areaData.tag){
       return (
-        <TagBOx />
+        <TagBOx>⛳</TagBOx>
       )
     }
     if(!areaData.clicked){ // 未点击状态
