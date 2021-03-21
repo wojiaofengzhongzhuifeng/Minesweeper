@@ -1,8 +1,6 @@
 .App {
   text-align: center;
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
 }
 
@@ -39,6 +37,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+.mine-left, .mine-right{
+  width: 300px;
+  flex: 1;
+}
+.mine-header{
+  display: flex;
+  justify-content: space-between;
 }
 *{
   box-sizing: border-box;

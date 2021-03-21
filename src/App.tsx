@@ -175,29 +175,55 @@ function MineArea() {
   }
 
   return (
-    <div className="App">
-      <div>
-        {
-          rowAndColMinClearance &&
-          rowAndColMinClearance.map((mineClearanceRow, index)=>(
-            <AreaRow
-              rowData={mineClearanceRow}
-              rowIndex={index}
-              key={index}
-              handleClick={handleClick}
-              handleRightClick={handleRightClick}
-            />
-          ))
-        }
-      </div>
+    <div>
+      {
+        rowAndColMinClearance &&
+        rowAndColMinClearance.map((mineClearanceRow, index)=>(
+          <AreaRow
+            rowData={mineClearanceRow}
+            rowIndex={index}
+            key={index}
+            handleClick={handleClick}
+            handleRightClick={handleRightClick}
+          />
+        ))
+      }
     </div>
   );
+}
+function MineHeader(){
+  return (
+    <div className={'mine-header'}>
+      <SelectDifficulty />
+      <Statistics />
+    </div>
+  )
+}
+
+function SelectDifficulty(){
+  return (
+    <div>
+      SelectDifficulty
+    </div>
+  )
+}
+function Statistics(){
+  return (
+    <div>
+      Statistics
+    </div>
+  )
 }
 
 function App(){
   return (
-    <div>
-      <MineArea />
+    <div className={'App'}>
+      <div className="mine-left">1</div>
+      <div className="mine-ct">
+        <MineHeader></MineHeader>
+        <MineArea />
+      </div>
+      <div className="mine-right">2</div>
     </div>
   )
 }
