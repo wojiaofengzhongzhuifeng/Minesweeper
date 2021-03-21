@@ -6,7 +6,7 @@ import {
   MineAreaData,
   MineClearance,
   SafeAreaData,
-
+  computedRemainMineNumber,
 } from './utils';
 
 import styled from 'styled-components'
@@ -28,21 +28,73 @@ const TagBOx = styled(Box)`
   border: 5px solid yellow;
 `
 // 1️⃣ 创建全局 context
-const CountContext = React.createContext<any>(null);
+const CountContext = React.createContext<{
+  rowAndColMinClearance: MineClearance,
+  setRowAndColMinClearance: (n: MineClearance)=>void,
+
+}>({
+  rowAndColMinClearance: [],
+  setRowAndColMinClearance: ()=>{},
+
+});
 CountContext.displayName = "countContext";
 
 const useMineData = ()=>{
-  const [count, setCount] = useState(0);
+  const [rowAndColMinClearance, setRowAndColMinClearance] = useState<MineClearance>([]);
+
+  const initMineData = ()=>{
+    setRowAndColMinClearance(initMineClearanceData(5, 8));
+  }
+
+  useEffect(()=>{
+    initMineData();
+  }, []);
+
+  // 判断用户的结果
+  const checkGameResult = useCallback(()=>{
+    let resultArray = rowAndColMinClearance?.flat();
+    // eslint-disable-next-line array-callback-return
+    let clickMineAreaFlag = resultArray && resultArray.find((areaData)=>{
+      if(areaData.number === 1 && areaData.clicked){
+        return true
+      }
+    }) !== undefined
+
+    // eslint-disable-next-line array-callback-return
+    let passGameFlag = resultArray && resultArray.find((areaData)=>{
+      if((areaData.number === 0 && !areaData.clicked) || (areaData.number === 1 && !areaData.tag)){
+        return true
+      }
+    }) === undefined
+
+    if(clickMineAreaFlag){
+      if (window.confirm("游戏失败, 点击确定重新开始游戏")) {
+        initMineData();
+      } else {
+      }
+    }
+
+    if(passGameFlag){
+      console.log('通过游戏');
+    }
+
+  }, [rowAndColMinClearance])
+
+  useEffect(()=>{
+    console.log('新 data', rowAndColMinClearance);
+    checkGameResult();
+  }, [checkGameResult, rowAndColMinClearance]);
+
   return {
-    count,
-    setCount
+    rowAndColMinClearance,
+    setRowAndColMinClearance,
   };
 }
 
 const CountProvider = ({ children }: any) => {
-  const { count, setCount } = useMineData();
+  const { setRowAndColMinClearance, rowAndColMinClearance } = useMineData();
   return (
-    <CountContext.Provider value={{ count, setCount }} children={children} />
+    <CountContext.Provider value={{ setRowAndColMinClearance, rowAndColMinClearance }} children={children} />
   );
 };
 
@@ -105,7 +157,7 @@ function AreaRow(
       }
     }
     return (
-    <div>
+    <div style={{border: '1px solid red'}}>
       <p>
         {areaData.number === 1 ? `地雷${areaData.number}` : `安全${areaData.number}`}
       </p>
@@ -141,61 +193,14 @@ function AreaRow(
 }
 
 function MineArea() {
-  const [rowAndColMinClearance, setRowAndColMinClearance] = useState<MineClearance>();
-
-  const initMineData = ()=>{
-    setRowAndColMinClearance(initMineClearanceData(5, 8));
-  }
-
-  useEffect(()=>{
-    initMineData();
-  }, []);
-
-  // 判断用户的结果
-  const checkGameResult = useCallback(()=>{
-    let resultArray = rowAndColMinClearance?.flat();
-    // eslint-disable-next-line array-callback-return
-    let clickMineAreaFlag = resultArray && resultArray.find((areaData)=>{
-      if(areaData.number === 1 && areaData.clicked){
-        return true
-      }
-    }) !== undefined
-
-    // eslint-disable-next-line array-callback-return
-    let passGameFlag = resultArray && resultArray.find((areaData)=>{
-      if((areaData.number === 0 && areaData.clicked !== true) || (areaData.number === 1 && areaData.tag !== true)){
-        return true
-      }
-    }) === undefined
-
-    if(clickMineAreaFlag){
-      if (window.confirm("游戏失败, 点击确定重新开始游戏")) {
-        initMineData();
-      } else {
-      }
-    }
-
-    if(passGameFlag){
-      console.log('通过游戏');
-    }
-
-  }, [rowAndColMinClearance])
-
-  useEffect(()=>{
-    console.log('新 data', rowAndColMinClearance);
-    checkGameResult();
-  }, [checkGameResult, rowAndColMinClearance]);
+  const {setRowAndColMinClearance, rowAndColMinClearance} = useCountContext();
 
   const handleClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
-
-    console.log('e', e);
-
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'leftClick');
     setRowAndColMinClearance(afterSelectResult);
   }
 
   const handleRightClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
-    console.log('handleRightClick', e);
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'rightClick');
     setRowAndColMinClearance(afterSelectResult);
   }
@@ -218,12 +223,10 @@ function MineArea() {
   );
 }
 function MineHeader(){
-  const { setCount, count } = useCountContext();
 
   return (
     <div className={'mine-header'}>
       <SelectDifficulty />
-      <button onClick={()=>{setCount(count + 1)}}> + 1</button>
       <Statistics />
     </div>
   )
@@ -237,11 +240,13 @@ function SelectDifficulty(){
   )
 }
 function Statistics(){
-  const { setCount, count } = useCountContext();
+  const { rowAndColMinClearance } = useCountContext();
+  console.log(rowAndColMinClearance);
+  let remainMineNumber = computedRemainMineNumber(rowAndColMinClearance);
 
   return (
     <div>
-      ⛳: {count}
+      ⛳: {remainMineNumber}
     </div>
   )
 }
@@ -260,7 +265,9 @@ function App(){
 }
 
 export const AppProviders = ({ children }: any) => {
-  return <CountProvider>{children}</CountProvider>;
+  return (
+    CountProvider && <CountProvider>{children}</CountProvider>
+  )
 };
 
 export default App;

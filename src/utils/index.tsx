@@ -97,4 +97,11 @@ export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowC
 
 
 }
+export function computedRemainMineNumber(initData: MineClearance): number{
+  const afterFlatData = initData.flat().filter((areaData)=>{
+    return areaData.number === 1 && !areaData.tag;
+  });
+
+  return afterFlatData.length
+}
 
