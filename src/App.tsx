@@ -117,8 +117,12 @@ function AreaRow(
 function MineArea() {
   const [rowAndColMinClearance, setRowAndColMinClearance] = useState<MineClearance>();
 
+  const initMineData = ()=>{
+    setRowAndColMinClearance(initMineClearanceData(5, 8));
+  }
+
   useEffect(()=>{
-    setRowAndColMinClearance(initMineClearanceData(5, 6));
+    initMineData();
   }, []);
 
   // 判断用户的结果
@@ -139,7 +143,10 @@ function MineArea() {
     }) === undefined
 
     if(clickMineAreaFlag){
-      console.log('点击雷区, 游戏结束');
+      if (window.confirm("游戏失败, 点击确定重新开始游戏")) {
+        initMineData();
+      } else {
+      }
     }
 
     if(passGameFlag){
