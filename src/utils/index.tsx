@@ -77,7 +77,7 @@ const help = (mineClearance: MineClearance, row: number, col: number)=>{
   console.log(mineClearance);
 }
 
-//
+
 const autoClickAroundArea = (mineClearance: MineClearance, row: number, col: number)=>{
   // if((mineClearance[row - 1] && mineClearance[row - 1][col - 1])){
   //   // 没有超出边界,需要计算周围地雷区数量 + 修改为 click
@@ -119,6 +119,7 @@ const autoClickAroundArea = (mineClearance: MineClearance, row: number, col: num
 }
 
 // 计算得出周围 8 个区块雷区个数
+// feat: 核心功能 1
 export function computedDangerousArea(mineClearance: MineClearance, row: number, col: number): number{
   let aroundArea1 = (mineClearance[row - 1] && mineClearance[row - 1][col - 1]) === undefined ? 0 : mineClearance[row - 1][col - 1].number;
   let aroundArea2 = (mineClearance[row - 1] && mineClearance[row - 1][col]) === undefined ? 0 : mineClearance[row - 1][col].number;
@@ -133,6 +134,7 @@ export function computedDangerousArea(mineClearance: MineClearance, row: number,
 }
 
 // 根据用户所选, 返回结果
+// feat: 核心功能,递归点击绝对安全区块
 export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowCol: SelectRowCol, clickType: ClickType): MineClearance{
   let {row, col} = selectRowCol;
   const selectArea = mineClearance[row][col].number;

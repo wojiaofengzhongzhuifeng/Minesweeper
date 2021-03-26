@@ -94,6 +94,10 @@ const useMineData = ()=>{
   };
 }
 
+const useSelectLevel = ()=>{
+  const [selectLevel, setSelectLevel] = useState();
+}
+
 const CountProvider = ({ children }: any) => {
   const { setRowAndColMinClearance, rowAndColMinClearance } = useMineData();
   return (
@@ -240,7 +244,7 @@ function MineHeader(){
 
   return (
     <div className={'mine-header'}>
-      <SelectDifficulty />
+      {/*<SelectDifficulty />*/}
       <Statistics />
     </div>
   )
@@ -249,7 +253,11 @@ function MineHeader(){
 function SelectDifficulty(){
   return (
     <div>
-      SelectDifficulty
+      <select >
+        <option value={Mode.prod}>简单</option>
+        <option value={Mode.dev}>普通</option>
+        <option value={Mode.dev}>困难</option>
+      </select>
     </div>
   )
 }
