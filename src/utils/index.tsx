@@ -65,14 +65,14 @@ export function initMineClearanceData(row: number, col: number): MineClearance{
 const help = (mineClearance: MineClearance, row: number, col: number)=>{
   let test = mineClearance[row] && mineClearance[row][col] as SafeAreaData;
   console.log('test ', test, row, col);
-  if(test){
+  if(test && !test.clicked){
     // 没有超出边界,需要计算周围地雷区数量 + 修改为 click
     test.clicked = true;
     let danergousAreaNumber = computedDangerousArea(mineClearance, row, col);
-    // if(danergousAreaNumber === 0){
-    //   autoClickAroundArea(mineClearance, row, col)
-    // }
     test.aroundDangerous = danergousAreaNumber;
+    if(danergousAreaNumber === 0){
+      autoClickAroundArea(mineClearance, row, col)
+    }
   }
   console.log(mineClearance);
 }
@@ -97,6 +97,9 @@ const autoClickAroundArea = (mineClearance: MineClearance, row: number, col: num
   help(mineClearance, row + 1,col - 1);
   help(mineClearance, row + 1,col);
   help(mineClearance, row + 1,col + 1);
+
+
+
 
   // let aroundArea1 = (mineClearance[row - 1] && mineClearance[row - 1][col - 1]) === undefined ? 0 : mineClearance[row - 1][col - 1].number;
   // let aroundArea2 = (mineClearance[row - 1] && mineClearance[row - 1][col]) === undefined ? 0 : mineClearance[row - 1][col].number;
