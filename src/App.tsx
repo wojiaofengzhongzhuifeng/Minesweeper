@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import './App.css';
 import {
   getUserSelectAreaResult,
@@ -7,6 +7,7 @@ import {
   MineClearance,
   SafeAreaData,
   computedRemainMineNumber,
+  Mode,
 } from './utils';
 
 import styled from 'styled-components'
@@ -117,13 +118,15 @@ function AreaRow(
     rowIndex,
     handleClick,
     handleRightClick,
+    mode,
   }: {
-      rowData: (SafeAreaData | MineAreaData)[],
-      rowIndex: number,
-      handleClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>void,
-      handleRightClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>void}
+    rowData: (SafeAreaData | MineAreaData)[],
+    rowIndex: number,
+    handleClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
+    handleRightClick: (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
+    mode: Mode,
+  }
   ){
-
   const renderAroundDangerousNumber = (areaData: SafeAreaData | MineAreaData)=>{
     if(areaData.number === 0 && areaData.clicked){
       let aroundDangerous = areaData.aroundDangerous as number;
@@ -137,44 +140,49 @@ function AreaRow(
 
 
   const renderAreaContent = (areaData: SafeAreaData | MineAreaData)=>{
-    if(areaData.tag){
-      return (
-        <TagBOx>⛳</TagBOx>
-      )
-    }
-    if(!areaData.clicked){ // 未点击状态
-      return (
-        <Box></Box>
-      )
-    } else if(areaData.clicked){ // 点击状态
-      if(areaData.number === 0){ // 点击安全区
+    if(mode === Mode.prod){
+      if(areaData.tag){
         return (
-          <SafeBox>
-            {renderAroundDangerousNumber(areaData)}
-          </SafeBox>
-        )
-      } else { // 点击危险区
-        return (
-          <DangerousBox />
+          <TagBOx>⛳</TagBOx>
         )
       }
-    }
-    return (
-    <div style={{border: '1px solid red'}}>
-      <p>
-        {areaData.number === 1 ? `地雷${areaData.number}` : `安全${areaData.number}`}
-      </p>
-      <p>
-        {areaData.tag ? `标记${areaData.tag}` : `标记${areaData.tag}`}
-      </p>
-      <p>
-        {areaData.clicked ? `点击${areaData.clicked}` : `点击${areaData.clicked}`}
-      </p>
-      {
-        renderAroundDangerousNumber(areaData)
+      if(!areaData.clicked){ // 未点击状态
+        return (
+          <Box />
+        )
+      } else if(areaData.clicked){ // 点击状态
+        if(areaData.number === 0){ // 点击安全区
+          return (
+            <SafeBox>
+              {renderAroundDangerousNumber(areaData)}
+            </SafeBox>
+          )
+        } else { // 点击危险区
+          return (
+            <DangerousBox />
+          )
+        }
       }
-    </div>
-    )
+    } else {
+      return (
+        <div style={{border: '1px solid red'}}>
+          <p>
+            {areaData.number === 1 ? `地雷${areaData.number}` : `安全${areaData.number}`}
+          </p>
+          <p>
+            {areaData.tag ? `标记${areaData.tag}` : `标记${areaData.tag}`}
+          </p>
+          <p>
+            {areaData.clicked ? `点击${areaData.clicked}` : `点击${areaData.clicked}`}
+          </p>
+          {
+            renderAroundDangerousNumber(areaData)
+          }
+        </div>
+      )
+    }
+
+
   }
 
   return (
@@ -195,15 +203,17 @@ function AreaRow(
   )
 }
 
-function MineArea() {
+function MineArea({mode}: {mode: Mode}) {
   const {setRowAndColMinClearance, rowAndColMinClearance} = useCountContext();
 
   const handleClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
+    console.log(e);
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'leftClick');
     setRowAndColMinClearance(afterSelectResult);
   }
 
   const handleRightClick = (rowIndex: number, colIndex: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
+    console.log(e);
     let afterSelectResult = rowAndColMinClearance && getUserSelectAreaResult(rowAndColMinClearance, {row:rowIndex, col:colIndex}, 'rightClick');
     setRowAndColMinClearance(afterSelectResult);
   }
@@ -219,6 +229,7 @@ function MineArea() {
             key={index}
             handleClick={handleClick}
             handleRightClick={handleRightClick}
+            mode={mode}
           />
         ))
       }
@@ -255,12 +266,25 @@ function Statistics(){
 }
 
 function App(){
+
+  const [mode, setMode] = useState<number>(0);
+
+  const handleSelectMode = (e: ChangeEvent<HTMLSelectElement>)=>{
+    setMode(Number(e.target.value));
+  }
+
   return (
     <div className={'App'}>
-      <div className="mine-left">1</div>
+      <div className="mine-left">
+        选择开发模型
+        <select name="cars" id="cars" onChange={handleSelectMode} value={mode}>
+          <option value={Mode.prod}>生产环境</option>
+          <option value={Mode.dev}>开发环境</option>
+        </select>
+      </div>
       <div className="mine-ct">
-        <MineHeader></MineHeader>
-        <MineArea />
+        <MineHeader />
+        <MineArea mode={mode}/>
       </div>
       <div className="mine-right">2</div>
     </div>

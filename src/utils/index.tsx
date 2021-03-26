@@ -13,6 +13,10 @@ export type MineAreaData = {
 export type MineClearance = (SafeAreaData | MineAreaData)[][]
 
 export type ClickType = 'leftClick' | 'rightClick' // rightClick 表示标记区块
+export enum Mode{
+  'dev',
+  'prod'
+}
 
 // 用户选择的行列
  export interface SelectRowCol {
