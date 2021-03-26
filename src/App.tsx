@@ -83,6 +83,7 @@ const useMineData = ()=>{
 
   useEffect(()=>{
     console.log('新 data', rowAndColMinClearance);
+    // setRowAndColMinClearance(rowAndColMinClearance);
     checkGameResult();
   }, [checkGameResult, rowAndColMinClearance]);
 

@@ -58,8 +58,61 @@ export function initMineClearanceData(row: number, col: number): MineClearance{
   return result
 }
 
+const help = (mineClearance: MineClearance, row: number, col: number)=>{
+  let test = mineClearance[row] && mineClearance[row][col] as SafeAreaData;
+  console.log('test ', test, row, col);
+  if(test){
+    // 没有超出边界,需要计算周围地雷区数量 + 修改为 click
+    test.clicked = true;
+    let danergousAreaNumber = computedDangerousArea(mineClearance, row, col);
+    // if(danergousAreaNumber === 0){
+    //   autoClickAroundArea(mineClearance, row, col)
+    // }
+    test.aroundDangerous = danergousAreaNumber;
+  }
+  console.log(mineClearance);
+}
+
+//
+const autoClickAroundArea = (mineClearance: MineClearance, row: number, col: number)=>{
+  // if((mineClearance[row - 1] && mineClearance[row - 1][col - 1])){
+  //   // 没有超出边界,需要计算周围地雷区数量 + 修改为 click
+  //   mineClearance[row - 1][col - 1].clicked = true;
+  //   let danergousAreaNumber = computedDangerousArea(mineClearance, row - 1, col - 1);
+  //   if(danergousAreaNumber === 0){
+  //     autoClickAroundArea(mineClearance, row - 1, col - 1)
+  //   }
+  // }
+  help(mineClearance, row - 1,col - 1);
+  help(mineClearance, row - 1,col);
+  help(mineClearance, row - 1,col + 1);
+
+  help(mineClearance, row,col - 1);
+  help(mineClearance, row,col + 1);
+
+  help(mineClearance, row + 1,col - 1);
+  help(mineClearance, row + 1,col);
+  help(mineClearance, row + 1,col + 1);
+
+  // let aroundArea1 = (mineClearance[row - 1] && mineClearance[row - 1][col - 1]) === undefined ? 0 : mineClearance[row - 1][col - 1].number;
+  // let aroundArea2 = (mineClearance[row - 1] && mineClearance[row - 1][col]) === undefined ? 0 : mineClearance[row - 1][col].number;
+  // let aroundArea3 = (mineClearance[row - 1] && mineClearance[row - 1][col + 1]) === undefined ? 0 : mineClearance[row - 1][col + 1].number;
+  // let aroundArea4 = (mineClearance[row] && mineClearance[row][col - 1]) === undefined ? 0 : mineClearance[row][col - 1].number;
+  // let aroundArea5 = (mineClearance[row] && mineClearance[row][col + 1]) === undefined ? 0 : mineClearance[row][col + 1].number;
+  // let aroundArea6 = (mineClearance[row + 1] && mineClearance[row + 1][col - 1]) === undefined ? 0 : mineClearance[row + 1][col - 1].number;
+  // let aroundArea7 = (mineClearance[row + 1] && mineClearance[row + 1][col]) === undefined ? 0 : mineClearance[row + 1][col].number;
+  // let aroundArea8 = (mineClearance[row + 1] && mineClearance[row + 1][col + 1]) === undefined ? 0 : mineClearance[row + 1][col + 1].number;
+
+  // mineClearance[row - 1][col - 1].clicked = true;
+  // computedDangerousArea()
+  //
+  //
+  // mineClearance[row - 1][col - 1].clicked = true;
+
+}
+
 // 计算得出周围 8 个区块雷区个数
-function computedDangerousArea(mineClearance: MineClearance, row: number, col: number): number{
+export function computedDangerousArea(mineClearance: MineClearance, row: number, col: number): number{
   let aroundArea1 = (mineClearance[row - 1] && mineClearance[row - 1][col - 1]) === undefined ? 0 : mineClearance[row - 1][col - 1].number;
   let aroundArea2 = (mineClearance[row - 1] && mineClearance[row - 1][col]) === undefined ? 0 : mineClearance[row - 1][col].number;
   let aroundArea3 = (mineClearance[row - 1] && mineClearance[row - 1][col + 1]) === undefined ? 0 : mineClearance[row - 1][col + 1].number;
@@ -86,6 +139,9 @@ export function getUserSelectAreaResult(mineClearance: MineClearance, selectRowC
     copyMineClearance[row][col] = {...mineClearance[row][col], clicked: true}
     if(selectArea === 0){
       let aroundDangerousArea = computedDangerousArea(mineClearance, row, col);
+      if(aroundDangerousArea === 0){
+        autoClickAroundArea(copyMineClearance, row, col);
+      }
       copyMineClearance[row][col] = {...mineClearance[row][col], aroundDangerous: aroundDangerousArea,  clicked: true}
     }
   } else {
